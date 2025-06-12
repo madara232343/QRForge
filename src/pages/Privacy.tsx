@@ -75,12 +75,12 @@ const Privacy = () => {
               <div>
                 <h2 className="text-xl font-semibold mb-3">Contact</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  If you have any questions about this Privacy Policy, please contact us at contact@qrforge.com
+                  If you have any questions about this Privacy Policy, please contact us at hello@qrforge.com
                 </p>
               </div>
 
               <div className="text-sm text-slate-500 pt-4 border-t">
-                Last updated: December 2024
+                Last updated: January 2025
               </div>
             </CardContent>
           </Card>

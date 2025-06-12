@@ -36,67 +36,59 @@ const Terms = () => {
               <div>
                 <h2 className="text-xl font-semibold mb-3">Acceptance of Terms</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  By using QRForge, you agree to these Terms of Service. If you do not agree, please do not use our service.
+                  By accessing and using QRForge, you accept and agree to be bound by the terms and provision of this agreement.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Service Description</h2>
+                <h2 className="text-xl font-semibold mb-3">Use License</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  QRForge is a free QR code generator that allows users to create, customize, and download QR codes 
-                  for various purposes including URLs, text, email, phone numbers, and more.
+                  Permission is granted to temporarily download one copy of QRForge for personal, non-commercial transitory viewing only. 
+                  This is the grant of a license, not a transfer of title.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Usage Rights</h2>
+                <h2 className="text-xl font-semibold mb-3">QR Code Usage</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  You may use QRForge for personal and commercial purposes. All generated QR codes are yours to use 
-                  without restrictions. We claim no ownership over your generated content.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-xl font-semibold mb-3">Prohibited Uses</h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                  You may not use QRForge to create content that is illegal, harmful, threatening, abusive, 
-                  defamatory, or violates any laws or regulations.
+                  All QR codes generated using QRForge are free to use for personal and commercial purposes. 
+                  You retain full ownership and rights to your generated QR codes.
                 </p>
               </div>
 
               <div>
                 <h2 className="text-xl font-semibold mb-3">Service Availability</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  We strive to keep QRForge available 24/7, but we cannot guarantee uninterrupted service. 
-                  We may perform maintenance or updates that temporarily affect availability.
+                  QRForge is provided "as is" without any warranties. We do not guarantee continuous availability 
+                  of the service and may suspend or discontinue it at any time.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Disclaimer</h2>
+                <h2 className="text-xl font-semibold mb-3">Prohibited Uses</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  QRForge is provided "as is" without warranties of any kind. We are not responsible for any 
-                  damages arising from the use of our service.
+                  You may not use QRForge for any unlawful purpose or to generate QR codes containing malicious, 
+                  harmful, or illegal content.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Changes to Terms</h2>
+                <h2 className="text-xl font-semibold mb-3">Limitation of Liability</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  We may update these Terms of Service from time to time. Continued use of the service 
-                  constitutes acceptance of any changes.
+                  In no event shall QRForge or its creators be liable for any damages arising out of the use or 
+                  inability to use the service.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold mb-3">Contact</h2>
+                <h2 className="text-xl font-semibold mb-3">Contact Information</h2>
                 <p className="text-slate-600 dark:text-slate-400">
-                  If you have any questions about these Terms of Service, please contact us at contact@qrforge.com
+                  If you have any questions about these Terms of Service, please contact us at legal@qrforge.com
                 </p>
               </div>
 
               <div className="text-sm text-slate-500 pt-4 border-t">
-                Last updated: December 2024
+                Last updated: January 2025
               </div>
             </CardContent>
           </Card>

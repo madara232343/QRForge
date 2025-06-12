@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import FAQ from "./pages/FAQ";
-import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
@@ -21,7 +20,7 @@ const App = () => {
     const metaTags = [
       { name: 'description', content: 'QRForge - Free unlimited QR code generator with advanced customization. Create professional QR codes for URLs, WiFi, business cards, and more. No registration required.' },
       { name: 'keywords', content: 'qr code generator, free qr code, qr code maker, custom qr code, wifi qr code, business card qr code, url qr code' },
-      { name: 'author', content: 'Raval Dhwanil' },
+      { name: 'author', content: 'mr robot' },
       { name: 'robots', content: 'index, follow' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       { property: 'og:title', content: 'QRForge - Free QR Code Generator' },
@@ -65,7 +64,7 @@ const App = () => {
       },
       "creator": {
         "@type": "Person",
-        "name": "Raval Dhwanil"
+        "name": "mr robot"
       }
     };
 
@@ -85,7 +84,6 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<NotFound />} />

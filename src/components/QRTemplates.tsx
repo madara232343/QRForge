@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { QRData } from '@/components/QRGenerator';
 import { Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import QRCode from 'qrcode';
 
 interface QRTemplate {
   id: string;
@@ -19,6 +20,9 @@ interface QRTemplatesProps {
 }
 
 export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) => {
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
   const templates: QRTemplate[] = [
     {
       id: 'business',
@@ -27,7 +31,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
       preview: '🏢',
       data: {
         type: 'text',
-        content: 'BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nORG:Company Inc\nTEL:+1234567890\nEMAIL:john@company.com\nEND:VCARD',
+        content: 'BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nORG:Tech Corp\nTEL:+1-555-0123\nEMAIL:john@techcorp.com\nURL:https://techcorp.com\nEND:VCARD',
         style: {
           foregroundColor: '#1e293b',
           backgroundColor: '#ffffff',
@@ -38,12 +42,12 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
     },
     {
       id: 'wifi',
-      name: 'WiFi Access',
+      name: 'WiFi Network',
       description: 'Quick WiFi connection',
       preview: '📶',
       data: {
         type: 'wifi',
-        content: 'WIFI:T:WPA;S:MyNetwork;P:MyPassword;;',
+        content: 'WIFI:T:WPA;S:HomeNetwork;P:SecurePassword123;;',
         style: {
           foregroundColor: '#3b82f6',
           backgroundColor: '#ffffff',
@@ -59,7 +63,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
       preview: '📱',
       data: {
         type: 'url',
-        content: 'https://instagram.com/yourprofile',
+        content: 'https://instagram.com/qrforge_official',
         style: {
           foregroundColor: '#e91e63',
           backgroundColor: '#ffffff',
@@ -75,7 +79,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
       preview: '🍽️',
       data: {
         type: 'url',
-        content: 'https://yourmenu.com',
+        content: 'https://restaurant-delicious.com/menu',
         style: {
           foregroundColor: '#f59e0b',
           backgroundColor: '#ffffff',
@@ -87,11 +91,11 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
     {
       id: 'event',
       name: 'Event Ticket',
-      description: 'Event information',
+      description: 'Event information & registration',
       preview: '🎫',
       data: {
         type: 'text',
-        content: 'Event: Conference 2024\nDate: Dec 15, 2024\nVenue: Convention Center',
+        content: 'Event: Tech Conference 2025\nDate: March 15, 2025\nTime: 9:00 AM - 6:00 PM\nVenue: Convention Center Hall A\nTicket ID: TC2025-001\nRegister: https://techconf2025.com',
         style: {
           foregroundColor: '#8b5cf6',
           backgroundColor: '#ffffff',
@@ -103,11 +107,11 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
     {
       id: 'crypto',
       name: 'Crypto Wallet',
-      description: 'Bitcoin address',
+      description: 'Bitcoin payment address',
       preview: '₿',
       data: {
         type: 'text',
-        content: 'bitcoin:1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2',
+        content: 'bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
         style: {
           foregroundColor: '#f97316',
           backgroundColor: '#ffffff',
@@ -124,10 +128,25 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
     toast.success('Template applied successfully!');
   };
 
-  const handleViewExample = (template: QRData) => {
-    // Create a temporary QR code preview for the template
-    console.log('Viewing example for:', template);
-    toast.info('Template preview loaded');
+  const handleViewExample = async (template: QRData) => {
+    try {
+      const qrImageUrl = await QRCode.toDataURL(template.content, {
+        color: {
+          dark: template.style.foregroundColor,
+          light: template.style.backgroundColor
+        },
+        width: 300,
+        margin: 2,
+        errorCorrectionLevel: template.style.errorCorrectionLevel
+      });
+      
+      setPreviewImage(qrImageUrl);
+      setIsPreviewOpen(true);
+      toast.success('Template preview generated!');
+    } catch (error) {
+      console.error('Error generating preview:', error);
+      toast.error('Failed to generate preview');
+    }
   };
 
   return (
@@ -175,6 +194,23 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
           </Card>
         ))}
       </div>
+
+      {/* Preview Modal */}
+      {isPreviewOpen && previewImage && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setIsPreviewOpen(false)}>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold mb-4 text-center">Template Preview</h3>
+            <img src={previewImage} alt="QR Code Preview" className="w-full max-w-64 mx-auto mb-4" />
+            <Button 
+              onClick={() => setIsPreviewOpen(false)}
+              className="w-full"
+              variant="outline"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

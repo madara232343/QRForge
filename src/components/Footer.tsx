@@ -1,13 +1,26 @@
 
 import React from 'react';
 import { Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 export const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -19,9 +32,9 @@ export const Footer = () => {
             <div className="flex items-center space-x-2 mb-4">
               <div className="p-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
                 <img 
-                  src="/lovable-uploads/9cee3815-f870-4a00-bd15-346ee325bfe2.png" 
+                  src="/lovable-uploads/15aab39f-9991-466f-9572-cb7cab456db4.png" 
                   alt="QRForge Logo" 
-                  className="h-8 w-8 text-white"
+                  className="h-8 w-8 text-white object-contain"
                 />
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
@@ -34,7 +47,7 @@ export const Footer = () => {
             <div className="flex items-center space-x-1 text-sm text-slate-500 mb-2">
               <span>Made with</span>
               <Heart className="h-4 w-4 text-red-500 fill-current" />
-              <span>by Raval Dhwanil</span>
+              <span>by mr robot</span>
             </div>
             <p className="text-sm text-slate-500">
               © 2025 QRForge. All rights reserved.
@@ -83,14 +96,6 @@ export const Footer = () => {
                   className="hover:text-white transition-colors duration-300"
                 >
                   FAQ
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/contact" 
-                  className="hover:text-white transition-colors duration-300"
-                >
-                  Contact
                 </Link>
               </li>
               <li>
