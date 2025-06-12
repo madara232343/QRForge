@@ -6,6 +6,8 @@ import { QRContentForm } from '@/components/QRContentForm';
 import { QRStylePanel } from '@/components/QRStylePanel';
 import { QRPreview } from '@/components/QRPreview';
 import { QRDownload } from '@/components/QRDownload';
+import { QRTemplates } from '@/components/QRTemplates';
+import { AdvancedQRCustomizer } from '@/components/AdvancedQRCustomizer';
 
 export interface QRData {
   type: 'url' | 'text' | 'email' | 'phone' | 'wifi';
@@ -15,6 +17,10 @@ export interface QRData {
     backgroundColor: string;
     shape: 'square' | 'rounded' | 'dots';
     logo?: string;
+    logoSize?: number;
+    customBackground?: string;
+    gradientColors?: [string, string];
+    useGradient?: boolean;
     errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
   };
 }
@@ -22,47 +28,80 @@ export interface QRData {
 export const QRGenerator = () => {
   const [qrData, setQRData] = useState<QRData>({
     type: 'url',
-    content: 'https://example.com',
+    content: 'https://github.com/lovable-dev',
     style: {
       foregroundColor: '#1e293b',
       backgroundColor: '#ffffff',
       shape: 'square',
+      logoSize: 20,
+      useGradient: false,
       errorCorrectionLevel: 'M'
     }
   });
 
   const [qrElement, setQRElement] = useState<HTMLElement | null>(null);
 
+  // Save to localStorage
+  useEffect(() => {
+    const savedQRHistory = localStorage.getItem('qrforge-history');
+    const history = savedQRHistory ? JSON.parse(savedQRHistory) : [];
+    history.unshift({ ...qrData, timestamp: Date.now() });
+    localStorage.setItem('qrforge-history', JSON.stringify(history.slice(0, 10)));
+  }, [qrData]);
+
+  const handleTemplateSelect = (templateData: QRData) => {
+    setQRData(templateData);
+  };
+
   return (
-    <section id="generator" className="py-20 bg-white/50 dark:bg-slate-900/50">
+    <section id="generator" className="py-20 bg-white/50 dark:bg-slate-900/50 transition-all duration-500">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              QR Code Generator
+              FREE QR Code Generator
             </span>
           </h2>
           <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Create your custom QR code with our powerful generator. Choose your content, customize the design, and download in multiple formats.
+            Create unlimited, professional QR codes with advanced customization. 100% free forever!
           </p>
+          <div className="flex flex-wrap justify-center gap-4 mt-6">
+            <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
+              ✓ Unlimited Usage
+            </span>
+            <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">
+              ✓ All Formats
+            </span>
+            <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-sm font-medium">
+              ✓ Advanced Customization
+            </span>
+          </div>
         </div>
 
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Panel - Configuration */}
             <div className="space-y-6">
-              <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md">
+              <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md transition-all duration-300 hover:shadow-2xl">
                 <CardContent className="p-6">
                   <Tabs defaultValue="content" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6">
+                    <TabsList className="grid w-full grid-cols-4 mb-6">
                       <TabsTrigger value="content" className="text-sm">Content</TabsTrigger>
                       <TabsTrigger value="style" className="text-sm">Style</TabsTrigger>
+                      <TabsTrigger value="advanced" className="text-sm">Advanced</TabsTrigger>
+                      <TabsTrigger value="templates" className="text-sm">Templates</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="content">
+                    <TabsContent value="content" className="animate-fade-in">
                       <QRContentForm qrData={qrData} setQRData={setQRData} />
                     </TabsContent>
-                    <TabsContent value="style">
+                    <TabsContent value="style" className="animate-fade-in">
                       <QRStylePanel qrData={qrData} setQRData={setQRData} />
+                    </TabsContent>
+                    <TabsContent value="advanced" className="animate-fade-in">
+                      <AdvancedQRCustomizer qrData={qrData} setQRData={setQRData} />
+                    </TabsContent>
+                    <TabsContent value="templates" className="animate-fade-in">
+                      <QRTemplates onSelectTemplate={handleTemplateSelect} />
                     </TabsContent>
                   </Tabs>
                 </CardContent>
