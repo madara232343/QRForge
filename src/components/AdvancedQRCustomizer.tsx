@@ -90,18 +90,18 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Logo Upload Section */}
-      <div className="space-y-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
+      <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
         <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
           Logo Customization
         </Label>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
             onClick={() => logoInputRef.current?.click()}
-            className="flex items-center space-x-2"
+            className="flex items-center justify-center space-x-2 text-sm"
           >
             <Upload className="h-4 w-4" />
             <span>Upload Logo</span>
@@ -112,16 +112,17 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
               <Button
                 variant="outline"
                 onClick={handleRemoveBackground}
-                className="flex items-center space-x-2 text-blue-600"
+                className="flex items-center justify-center space-x-2 text-blue-600 text-sm"
               >
                 <Image className="h-4 w-4" />
-                <span>Remove BG</span>
+                <span className="hidden sm:inline">Remove BG</span>
+                <span className="sm:hidden">Remove</span>
               </Button>
               
               <Button
                 variant="outline"
                 onClick={() => updateStyle({ logo: undefined })}
-                className="flex items-center space-x-2 text-red-600"
+                className="flex items-center justify-center space-x-2 text-red-600 text-sm"
               >
                 <Trash className="h-4 w-4" />
                 <span>Remove</span>
@@ -139,14 +140,18 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
         />
         
         {qrData.style.logo && (
-          <div className="space-y-2">
-            <img
-              src={qrData.style.logo}
-              alt="Logo preview"
-              className="w-16 h-16 object-contain border border-slate-300 dark:border-slate-600 rounded"
-            />
-            <div>
-              <Label className="text-xs text-slate-600 dark:text-slate-400">Logo Size (%)</Label>
+          <div className="space-y-3">
+            <div className="flex justify-center">
+              <img
+                src={qrData.style.logo}
+                alt="Logo preview"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain border border-slate-300 dark:border-slate-600 rounded"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs text-slate-600 dark:text-slate-400">
+                Logo Size: {qrData.style.logoSize || 20}%
+              </Label>
               <Input
                 type="range"
                 min="10"
@@ -155,23 +160,22 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
                 onChange={(e) => updateStyle({ logoSize: parseInt(e.target.value) })}
                 className="w-full"
               />
-              <span className="text-xs text-slate-500">{qrData.style.logoSize || 20}%</span>
             </div>
           </div>
         )}
       </div>
 
       {/* Custom Background Section */}
-      <div className="space-y-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
+      <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
         <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
           Background Customization
         </Label>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
             onClick={() => backgroundInputRef.current?.click()}
-            className="flex items-center space-x-2"
+            className="flex items-center justify-center space-x-2 text-sm"
           >
             <Upload className="h-4 w-4" />
             <span>Upload Background</span>
@@ -181,7 +185,7 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
             <Button
               variant="outline"
               onClick={() => updateStyle({ customBackground: undefined })}
-              className="flex items-center space-x-2 text-red-600"
+              className="flex items-center justify-center space-x-2 text-red-600 text-sm"
             >
               <Trash className="h-4 w-4" />
               <span>Remove</span>
@@ -201,13 +205,13 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
           <img
             src={qrData.style.customBackground}
             alt="Background preview"
-            className="w-full h-20 object-cover border border-slate-300 dark:border-slate-600 rounded"
+            className="w-full h-16 sm:h-20 object-cover border border-slate-300 dark:border-slate-600 rounded"
           />
         )}
       </div>
 
       {/* Gradient Options */}
-      <div className="space-y-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
+      <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
         <div className="flex items-center justify-between">
           <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
             Gradient Colors
@@ -219,7 +223,7 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
         </div>
         
         {qrData.style.useGradient && (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <Label className="text-xs text-slate-600 dark:text-slate-400">Start Color</Label>
               <input
@@ -228,7 +232,7 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
                 onChange={(e) => updateStyle({ 
                   gradientColors: [e.target.value, qrData.style.gradientColors?.[1] || '#3b82f6'] 
                 })}
-                className="w-full h-10 rounded border border-slate-300 dark:border-slate-600"
+                className="w-full h-8 sm:h-10 rounded border border-slate-300 dark:border-slate-600"
               />
             </div>
             <div>
@@ -239,7 +243,7 @@ export const AdvancedQRCustomizer: React.FC<AdvancedQRCustomizerProps> = ({ qrDa
                 onChange={(e) => updateStyle({ 
                   gradientColors: [qrData.style.gradientColors?.[0] || '#8b5cf6', e.target.value] 
                 })}
-                className="w-full h-10 rounded border border-slate-300 dark:border-slate-600"
+                className="w-full h-8 sm:h-10 rounded border border-slate-300 dark:border-slate-600"
               />
             </div>
           </div>

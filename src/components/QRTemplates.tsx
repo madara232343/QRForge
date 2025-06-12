@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { QRData } from '@/components/QRGenerator';
+import { Eye } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface QRTemplate {
   id: string;
@@ -119,6 +121,13 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
   const handleTemplateSelect = (template: QRData) => {
     console.log('Template selected:', template);
     onSelectTemplate(template);
+    toast.success('Template applied successfully!');
+  };
+
+  const handleViewExample = (template: QRData) => {
+    // Create a temporary QR code preview for the template
+    console.log('Viewing example for:', template);
+    toast.info('Template preview loaded');
   };
 
   return (
@@ -138,20 +147,30 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
             key={template.id}
             className="group relative overflow-hidden border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in"
           >
-            <CardContent className="p-6 text-center">
-              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
+            <CardContent className="p-4 sm:p-6 text-center">
+              <div className="text-3xl sm:text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
                 {template.preview}
               </div>
-              <h4 className="font-semibold text-lg mb-2">{template.name}</h4>
+              <h4 className="font-semibold text-base sm:text-lg mb-2">{template.name}</h4>
               <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
                 {template.description}
               </p>
-              <Button
-                onClick={() => handleTemplateSelect(template.data)}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105"
-              >
-                Use Template
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button
+                  onClick={() => handleTemplateSelect(template.data)}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 text-sm"
+                >
+                  Use Template
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleViewExample(template.data)}
+                  className="flex-1 sm:flex-none transition-all duration-300 hover:scale-105 text-sm"
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  Preview
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ))}

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { QrCode, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { useState } from 'react';
 
@@ -21,8 +21,12 @@ export const Header = () => {
       <div className="container mx-auto px-4 py-3 lg:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 animate-fade-in">
-            <div className="p-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
-              <QrCode className="h-5 w-5 lg:h-6 lg:w-6 text-white" />
+            <div className="p-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+              <img 
+                src="/lovable-uploads/9cee3815-f870-4a00-bd15-346ee325bfe2.png" 
+                alt="QRForge Logo" 
+                className="h-8 w-8 lg:h-10 lg:w-10"
+              />
             </div>
             <span className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               QRForge

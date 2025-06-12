@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { QrCode, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const Footer = () => {
   const scrollToSection = (sectionId: string) => {
@@ -16,8 +17,12 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="p-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
-                <QrCode className="h-6 w-6 text-white" />
+              <div className="p-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
+                <img 
+                  src="/lovable-uploads/9cee3815-f870-4a00-bd15-346ee325bfe2.png" 
+                  alt="QRForge Logo" 
+                  className="h-8 w-8 text-white"
+                />
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 QRForge
@@ -73,36 +78,36 @@ export const Footer = () => {
             <h3 className="font-semibold mb-4 text-white">Support</h3>
             <ul className="space-y-3 text-slate-400">
               <li>
-                <button 
-                  onClick={() => scrollToSection('features')} 
-                  className="hover:text-white transition-colors duration-300 text-left"
+                <Link 
+                  to="/faq" 
+                  className="hover:text-white transition-colors duration-300"
                 >
                   FAQ
-                </button>
+                </Link>
               </li>
               <li>
-                <a 
-                  href="mailto:contact@qrforge.com" 
+                <Link 
+                  to="/contact" 
                   className="hover:text-white transition-colors duration-300"
                 >
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection('generator')} 
-                  className="hover:text-white transition-colors duration-300 text-left"
+                <Link 
+                  to="/privacy" 
+                  className="hover:text-white transition-colors duration-300"
                 >
                   Privacy Policy
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection('generator')} 
-                  className="hover:text-white transition-colors duration-300 text-left"
+                <Link 
+                  to="/terms" 
+                  className="hover:text-white transition-colors duration-300"
                 >
                   Terms of Service
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
