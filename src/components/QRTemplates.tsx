@@ -116,38 +116,46 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
     }
   ];
 
+  const handleTemplateSelect = (template: QRData) => {
+    console.log('Template selected:', template);
+    onSelectTemplate(template);
+  };
+
   return (
-    <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md">
-      <CardHeader>
-        <CardTitle className="text-center bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+    <div id="templates" className="space-y-6">
+      <div className="text-center">
+        <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
           QR Templates
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {templates.map((template) => (
-            <div
-              key={template.id}
-              className="group relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 hover:shadow-lg transition-all duration-300 hover:scale-105"
-            >
-              <div className="text-center">
-                <div className="text-3xl mb-2">{template.preview}</div>
-                <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
-                  {template.description}
-                </p>
-                <Button
-                  size="sm"
-                  onClick={() => onSelectTemplate(template.data)}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-                >
-                  Use Template
-                </Button>
+        </h3>
+        <p className="text-slate-600 dark:text-slate-400">
+          Choose from our pre-designed templates to get started quickly
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {templates.map((template) => (
+          <Card
+            key={template.id}
+            className="group relative overflow-hidden border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in"
+          >
+            <CardContent className="p-6 text-center">
+              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                {template.preview}
               </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+              <h4 className="font-semibold text-lg mb-2">{template.name}</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                {template.description}
+              </p>
+              <Button
+                onClick={() => handleTemplateSelect(template.data)}
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105"
+              >
+                Use Template
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 };
