@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { QRData } from '@/components/QRGenerator';
+import QRCode from 'qrcode';
 
 interface QRPreviewProps {
   qrData: QRData;
@@ -17,9 +18,6 @@ export const QRPreview: React.FC<QRPreviewProps> = ({ qrData, onQRGenerated }) =
       if (!canvasRef.current) return;
 
       try {
-        // Using qrcode library for basic QR generation
-        const QRCode = (await import('qrcode')).default;
-        
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
