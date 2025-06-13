@@ -18,17 +18,17 @@ const App = () => {
   useEffect(() => {
     // SEO Meta Tags for better Google AdSense compatibility
     const metaTags = [
-      { name: 'description', content: 'QRForge - Free unlimited QR code generator with advanced customization. Create professional QR codes for URLs, WiFi, business cards, and more. No registration required.' },
-      { name: 'keywords', content: 'qr code generator, free qr code, qr code maker, custom qr code, wifi qr code, business card qr code, url qr code' },
+      { name: 'description', content: 'Qrenzo - Free unlimited QR code generator with advanced customization. Create professional QR codes for URLs, WiFi, business cards, and more. No registration required.' },
+      { name: 'keywords', content: 'qr code generator, free qr code, qr code maker, custom qr code, wifi qr code, business card qr code, url qr code, qrenzo' },
       { name: 'author', content: 'mr robot' },
       { name: 'robots', content: 'index, follow' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { property: 'og:title', content: 'QRForge - Free QR Code Generator' },
+      { property: 'og:title', content: 'Qrenzo - Free QR Code Generator' },
       { property: 'og:description', content: 'Create unlimited professional QR codes with advanced customization. 100% free forever.' },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: window.location.href },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: 'QRForge - Free QR Code Generator' },
+      { name: 'twitter:title', content: 'Qrenzo - Free QR Code Generator' },
       { name: 'twitter:description', content: 'Create unlimited professional QR codes with advanced customization. 100% free forever.' }
     ];
 
@@ -46,13 +46,13 @@ const App = () => {
     });
 
     // Set page title
-    document.title = 'QRForge - Free Unlimited QR Code Generator | Create Professional QR Codes';
+    document.title = 'Qrenzo - Free Unlimited QR Code Generator | Create Professional QR Codes';
 
     // Add structured data for better SEO
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "QRForge",
+      "name": "Qrenzo",
       "description": "Free unlimited QR code generator with advanced customization",
       "url": window.location.origin,
       "applicationCategory": "Utility",
@@ -76,7 +76,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="qrforge-theme">
+      <ThemeProvider defaultTheme="system" storageKey="qrenzo-theme">
         <TooltipProvider>
           <Toaster />
           <Sonner />
