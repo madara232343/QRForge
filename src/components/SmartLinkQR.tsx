@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { QRData } from '@/components/QRGenerator';
-import { Link, Calendar, BarChart3, Shield } from 'lucide-react';
+import { Link, Calendar, BarChart3, Shield, Copy, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SmartLinkQRProps {
@@ -24,10 +24,38 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
   const [enablePassword, setEnablePassword] = useState(false);
 
   const generateSmartLink = () => {
+    if (!smartUrl) {
+      toast.error('Please enter a destination URL');
+      return;
+    }
+
+    // Validate URL
+    try {
+      new URL(smartUrl);
+    } catch {
+      toast.error('Please enter a valid URL');
+      return;
+    }
+
     // Generate a unique short code
     const shortCode = Math.random().toString(36).substring(2, 8);
-    const smartLinkUrl = `https://qrenzo.app/s/${shortCode}`;
+    const smartLinkUrl = `${window.location.origin}/s/${shortCode}`;
     
+    const smartLinkData = {
+      originalUrl: smartUrl,
+      shortCode,
+      tracking: enableTracking,
+      expiry: enableExpiry ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000).toISOString() : null,
+      password: enablePassword ? password : null,
+      clicks: 0,
+      created: new Date().toISOString()
+    };
+
+    // Store smart link data in localStorage
+    const smartLinks = JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}');
+    smartLinks[shortCode] = smartLinkData;
+    localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
+
     // Update QR data with smart link
     setQRData({
       ...qrData,
@@ -44,6 +72,23 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
     });
 
     toast.success('Smart Link QR created! You can change the destination URL anytime.');
+  };
+
+  const copySmartLink = async () => {
+    if (qrData.content) {
+      try {
+        await navigator.clipboard.writeText(qrData.content);
+        toast.success('Smart link copied to clipboard!');
+      } catch {
+        toast.error('Failed to copy link');
+      }
+    }
+  };
+
+  const openSmartLink = () => {
+    if (qrData.content) {
+      window.open(qrData.content, '_blank');
+    }
   };
 
   return (
@@ -125,13 +170,36 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
         </Button>
 
         {qrData.smartLink && (
-          <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-            <p className="text-sm text-purple-700 dark:text-purple-300">
-              Smart Link Created: <code>{qrData.content}</code>
-            </p>
-            <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-              Clicks: {qrData.smartLink.clicks} | Created: {qrData.smartLink.created.toLocaleDateString()}
-            </p>
+          <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg space-y-3">
+            <div>
+              <p className="text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">
+                Smart Link Created:
+              </p>
+              <code className="text-xs bg-purple-100 dark:bg-purple-800 px-2 py-1 rounded break-all">
+                {qrData.content}
+              </code>
+            </div>
+            
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={copySmartLink} className="flex items-center gap-1">
+                <Copy className="h-3 w-3" />
+                Copy
+              </Button>
+              <Button size="sm" variant="outline" onClick={openSmartLink} className="flex items-center gap-1">
+                <ExternalLink className="h-3 w-3" />
+                Test
+              </Button>
+            </div>
+            
+            <div className="text-xs text-purple-600 dark:text-purple-400 space-y-1">
+              <p>Clicks: {qrData.smartLink.clicks} | Created: {qrData.smartLink.created.toLocaleDateString()}</p>
+              {qrData.smartLink.expiry && (
+                <p>Expires: {qrData.smartLink.expiry.toLocaleDateString()}</p>
+              )}
+              {qrData.smartLink.password && (
+                <p>Password Protected: Yes</p>
+              )}
+            </div>
           </div>
         )}
       </CardContent>
