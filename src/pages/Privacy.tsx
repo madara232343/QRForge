@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -6,22 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
 const Privacy = () => {
   const navigate = useNavigate();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900">
+  return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900">
       <Header />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center mb-8">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate(-1)}
-              className="mr-4"
-            >
+            <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="mr-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
@@ -35,10 +26,7 @@ const Privacy = () => {
             <CardContent className="p-8 space-y-6">
               <div>
                 <h2 className="text-xl font-semibold mb-3">Data Collection</h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                  QRForge operates on a privacy-first principle. We do not collect, store, or share any personal data. 
-                  All QR code generation happens locally in your browser.
-                </p>
+                <p className="text-slate-600 dark:text-slate-400">Qrenzo operates on a privacy-first principle. We do not collect, store, or share any personal data. All QR code generation happens locally in your browser.</p>
               </div>
 
               <div>
@@ -51,10 +39,7 @@ const Privacy = () => {
 
               <div>
                 <h2 className="text-xl font-semibold mb-3">Analytics</h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                  We use Google Analytics to understand how our service is used. This helps us improve QRForge. 
-                  No personally identifiable information is collected.
-                </p>
+                <p className="text-slate-600 dark:text-slate-400">We use Google Analytics to understand how our service is used. This helps us improve Qrenzo. No personally identifiable information is collected.</p>
               </div>
 
               <div>
@@ -74,21 +59,15 @@ const Privacy = () => {
 
               <div>
                 <h2 className="text-xl font-semibold mb-3">Contact</h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                  If you have any questions about this Privacy Policy, please contact us at hello@qrforge.com
-                </p>
+                <p className="text-slate-600 dark:text-slate-400">If you have any questions about this Privacy Policy, please contact us </p>
               </div>
 
-              <div className="text-sm text-slate-500 pt-4 border-t">
-                Last updated: January 2025
-              </div>
+              <div className="text-sm text-slate-500 pt-4 border-t">Last updated: January 2025</div>
             </CardContent>
           </Card>
         </div>
       </div>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Privacy;
