@@ -12,16 +12,16 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "Is QRForge really free?",
-      answer: "Yes! QRForge is 100% free with unlimited QR code generation. No hidden fees or registration required."
+      question: "Is Qrenzo really free?",
+      answer: "Yes! Qrenzo is 100% free with unlimited QR code generation. No hidden fees or registration required."
     },
     {
       question: "What types of QR codes can I create?",
-      answer: "You can create QR codes for URLs, text, email, phone numbers, WiFi credentials, business cards, and more."
+      answer: "You can create QR codes for URLs, text, email, phone numbers, WiFi credentials, business cards, crypto wallets, event invites, and more."
     },
     {
       question: "Can I customize my QR codes?",
-      answer: "Absolutely! You can change colors, add logos, remove backgrounds, apply gradients, and choose from different shapes."
+      answer: "Absolutely! You can change colors, add logos, apply gradients, choose different shapes (dots, round, hex), customize eye styles, and even add AI-generated backgrounds."
     },
     {
       question: "What formats can I download?",
@@ -33,7 +33,23 @@ const FAQ = () => {
     },
     {
       question: "Do QR codes expire?",
-      answer: "No, static QR codes never expire. They will work as long as the content they point to exists."
+      answer: "Static QR codes never expire. Smart Link QR codes (premium feature) can have optional expiry dates."
+    },
+    {
+      question: "What are Smart Link QR codes?",
+      answer: "Smart Link QR codes redirect to a short URL that you can change later, include click tracking, analytics, and optional expiry dates."
+    },
+    {
+      question: "Can I create password-protected QR codes?",
+      answer: "Yes! Our Locked QR feature allows you to require a password before the QR code redirects to its destination."
+    },
+    {
+      question: "Can I generate multiple QR codes at once?",
+      answer: "Yes! Use our Batch Generator to upload a CSV file and create hundreds of QR codes at once, perfect for businesses and events."
+    },
+    {
+      question: "Can I share my QR designs with others?",
+      answer: "Yes! You can publish your custom QR designs to our public gallery where others can view, vote, and remix your creations."
     }
   ];
 

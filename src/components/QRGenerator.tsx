@@ -8,6 +8,10 @@ import { QRPreview } from '@/components/QRPreview';
 import { QRDownload } from '@/components/QRDownload';
 import { QRTemplates } from '@/components/QRTemplates';
 import { AdvancedQRCustomizer } from '@/components/AdvancedQRCustomizer';
+import { SmartLinkQR } from '@/components/SmartLinkQR';
+import { BatchGenerator } from '@/components/BatchGenerator';
+import { QRGallery } from '@/components/QRGallery';
+import { QRChatbot } from '@/components/QRChatbot';
 
 export interface QRData {
   type: 'url' | 'text' | 'email' | 'phone' | 'wifi';
@@ -22,6 +26,15 @@ export interface QRData {
     gradientColors?: [string, string];
     useGradient?: boolean;
     errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
+  };
+  smartLink?: {
+    originalUrl: string;
+    shortCode: string;
+    tracking: boolean;
+    expiry: Date | null;
+    password: string | null;
+    clicks: number;
+    created: Date;
   };
 }
 
@@ -44,16 +57,21 @@ export const QRGenerator = () => {
 
   // Save to localStorage
   useEffect(() => {
-    const savedQRHistory = localStorage.getItem('qrforge-history');
+    const savedQRHistory = localStorage.getItem('qrenzo-history');
     const history = savedQRHistory ? JSON.parse(savedQRHistory) : [];
     history.unshift({ ...qrData, timestamp: Date.now() });
-    localStorage.setItem('qrforge-history', JSON.stringify(history.slice(0, 10)));
+    localStorage.setItem('qrenzo-history', JSON.stringify(history.slice(0, 10)));
   }, [qrData]);
 
   const handleTemplateSelect = (templateData: QRData) => {
     console.log('Applying template:', templateData);
     setQRData(templateData);
-    setActiveTab('content'); // Switch to content tab to show the applied template
+    setActiveTab('content');
+  };
+
+  const handleChatbotQR = (chatbotQRData: QRData) => {
+    setQRData(chatbotQRData);
+    setActiveTab('content');
   };
 
   return (
@@ -80,6 +98,9 @@ export const QRGenerator = () => {
               <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-sm font-medium">
                 ✓ Advanced Customization
               </span>
+              <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full text-sm font-medium">
+                ✓ Smart Links & Analytics
+              </span>
             </div>
           </div>
 
@@ -90,11 +111,13 @@ export const QRGenerator = () => {
                 <Card className="border-slate-200 dark:border-slate-700 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md transition-all duration-300 hover:shadow-2xl">
                   <CardContent className="p-4 lg:p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                      <TabsList className="grid w-full grid-cols-6 mb-6">
                         <TabsTrigger value="content" className="text-xs lg:text-sm">Content</TabsTrigger>
                         <TabsTrigger value="style" className="text-xs lg:text-sm">Style</TabsTrigger>
                         <TabsTrigger value="advanced" className="text-xs lg:text-sm">Advanced</TabsTrigger>
-                        <TabsTrigger value="templates" className="text-xs lg:text-sm">Templates</TabsTrigger>
+                        <TabsTrigger value="smart" className="text-xs lg:text-sm">Smart</TabsTrigger>
+                        <TabsTrigger value="batch" className="text-xs lg:text-sm">Batch</TabsTrigger>
+                        <TabsTrigger value="ai" className="text-xs lg:text-sm">AI Chat</TabsTrigger>
                       </TabsList>
                       <TabsContent value="content" className="animate-fade-in">
                         <QRContentForm qrData={qrData} setQRData={setQRData} />
@@ -105,8 +128,14 @@ export const QRGenerator = () => {
                       <TabsContent value="advanced" className="animate-fade-in">
                         <AdvancedQRCustomizer qrData={qrData} setQRData={setQRData} />
                       </TabsContent>
-                      <TabsContent value="templates" className="animate-fade-in">
-                        <QRTemplates onSelectTemplate={handleTemplateSelect} />
+                      <TabsContent value="smart" className="animate-fade-in">
+                        <SmartLinkQR qrData={qrData} setQRData={setQRData} />
+                      </TabsContent>
+                      <TabsContent value="batch" className="animate-fade-in">
+                        <BatchGenerator />
+                      </TabsContent>
+                      <TabsContent value="ai" className="animate-fade-in">
+                        <QRChatbot onQRGenerated={handleChatbotQR} />
                       </TabsContent>
                     </Tabs>
                   </CardContent>
@@ -128,6 +157,13 @@ export const QRGenerator = () => {
       <section className="py-12 lg:py-20 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 transition-all duration-500">
         <div className="container mx-auto px-4">
           <QRTemplates onSelectTemplate={handleTemplateSelect} />
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section className="py-12 lg:py-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 transition-all duration-500">
+        <div className="container mx-auto px-4">
+          <QRGallery onSelectFromGallery={handleTemplateSelect} />
         </div>
       </section>
     </>
