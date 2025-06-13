@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { QRData } from '@/components/QRGenerator';
-import { Eye } from 'lucide-react';
+import { Eye, X } from 'lucide-react';
 import { toast } from 'sonner';
 import QRCode from 'qrcode';
 
@@ -22,6 +22,7 @@ interface QRTemplatesProps {
 export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewTitle, setPreviewTitle] = useState<string>('');
 
   const templates: QRTemplate[] = [
     {
@@ -128,8 +129,10 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
     toast.success('Template applied successfully!');
   };
 
-  const handleViewExample = async (template: QRData) => {
+  const handleViewExample = async (template: QRData, templateName: string) => {
     try {
+      console.log('Generating preview for:', templateName, template);
+      
       const qrImageUrl = await QRCode.toDataURL(template.content, {
         color: {
           dark: template.style.foregroundColor,
@@ -137,10 +140,11 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
         },
         width: 300,
         margin: 2,
-        errorCorrectionLevel: template.style.errorCorrectionLevel
+        errorCorrectionLevel: template.style.errorCorrectionLevel as 'L' | 'M' | 'Q' | 'H'
       });
       
       setPreviewImage(qrImageUrl);
+      setPreviewTitle(templateName);
       setIsPreviewOpen(true);
       toast.success('Template preview generated!');
     } catch (error) {
@@ -183,7 +187,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => handleViewExample(template.data)}
+                  onClick={() => handleViewExample(template.data, template.name)}
                   className="flex-1 sm:flex-none transition-all duration-300 hover:scale-105 text-sm"
                 >
                   <Eye className="h-4 w-4 mr-1" />
@@ -197,10 +201,22 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
 
       {/* Preview Modal */}
       {isPreviewOpen && previewImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setIsPreviewOpen(false)}>
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold mb-4 text-center">Template Preview</h3>
-            <img src={previewImage} alt="QR Code Preview" className="w-full max-w-64 mx-auto mb-4" />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setIsPreviewOpen(false)}>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg max-w-sm w-full mx-4 relative" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">{previewTitle} Preview</h3>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setIsPreviewOpen(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex justify-center mb-4">
+              <img src={previewImage} alt="QR Code Preview" className="w-64 h-64 object-contain border rounded" />
+            </div>
             <Button 
               onClick={() => setIsPreviewOpen(false)}
               className="w-full"
