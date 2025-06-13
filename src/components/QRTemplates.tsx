@@ -25,6 +25,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [currentTemplate, setCurrentTemplate] = useState<QRTemplate | null>(null);
+  const [previewContent, setPreviewContent] = useState<string>('');
 
   const templates: QRTemplate[] = [
     {
@@ -199,6 +200,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
       
       setPreviewImage(qrImageUrl);
       setCurrentTemplate(template);
+      setPreviewContent(template.data.content);
       setIsPreviewOpen(true);
       toast.success('Preview generated!', {
         description: `Showing ${template.name} template example`,
@@ -215,6 +217,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
     setIsPreviewOpen(false);
     setPreviewImage(null);
     setCurrentTemplate(null);
+    setPreviewContent('');
   };
 
   return (
@@ -281,7 +284,7 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
       </div>
 
       {/* Enhanced Preview Modal */}
-      {isPreviewOpen && previewImage &&currentTemplate && (
+      {isPreviewOpen && previewImage && currentTemplate && (
         <div 
           className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in" 
           onClick={closePreview}
@@ -312,9 +315,14 @@ export const QRTemplates: React.FC<QRTemplatesProps> = ({ onSelectTemplate }) =>
               />
             </div>
             
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 text-center">
-              {currentTemplate.description}
-            </p>
+            <div className="mb-4">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-2 text-center">
+                {currentTemplate.description}
+              </p>
+              <div className="bg-slate-100 dark:bg-slate-700 p-2 rounded text-xs text-slate-700 dark:text-slate-300 break-all">
+                Content: {previewContent}
+              </div>
+            </div>
             
             <div className="flex gap-2">
               <Button 
