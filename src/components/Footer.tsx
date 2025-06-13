@@ -25,42 +25,42 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="bg-slate-900 text-white py-12 lg:py-16 animate-fade-in">
+    <footer className="bg-slate-900 text-white py-12 lg:py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-4 group">
-              <div className="p-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg group-hover:scale-110 transition-transform duration-300">
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="p-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
                 <img 
                   src="/lovable-uploads/15aab39f-9991-466f-9572-cb7cab456db4.png" 
-                  alt="Qrenzo Logo" 
+                  alt="QRForge Logo" 
                   className="h-8 w-8 text-white object-contain"
                 />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent hover:from-purple-300 hover:to-blue-300 transition-all duration-300">
-                Qrenzo
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                QRForge
               </span>
             </div>
-            <p className="text-slate-400 mb-6 max-w-md hover:text-slate-300 transition-colors duration-300">
+            <p className="text-slate-400 mb-6 max-w-md">
               Create beautiful, professional QR codes in seconds. Perfect for businesses, events, and personal use. 100% free, unlimited usage.
             </p>
-            <div className="flex items-center space-x-1 text-sm text-slate-500 mb-2 hover:text-slate-400 transition-colors duration-300">
+            <div className="flex items-center space-x-1 text-sm text-slate-500 mb-2">
               <span>Made with</span>
-              <Heart className="h-4 w-4 text-red-500 fill-current animate-pulse" />
+              <Heart className="h-4 w-4 text-red-500 fill-current" />
               <span>by mr robot</span>
             </div>
             <p className="text-sm text-slate-500">
-              © 2025 Qrenzo. All rights reserved.
+              © 2025 QRForge. All rights reserved.
             </p>
           </div>
 
-          <div className="hover:scale-105 transition-transform duration-300">
+          <div>
             <h3 className="font-semibold mb-4 text-white">Product</h3>
             <ul className="space-y-3 text-slate-400">
               <li>
                 <button 
                   onClick={() => scrollToSection('generator')} 
-                  className="hover:text-white transition-colors duration-300 text-left hover:translate-x-1 transform"
+                  className="hover:text-white transition-colors duration-300 text-left"
                 >
                   Generator
                 </button>
@@ -68,7 +68,7 @@ export const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection('features')} 
-                  className="hover:text-white transition-colors duration-300 text-left hover:translate-x-1 transform"
+                  className="hover:text-white transition-colors duration-300 text-left"
                 >
                   Features
                 </button>
@@ -76,7 +76,7 @@ export const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection('templates')} 
-                  className="hover:text-white transition-colors duration-300 text-left hover:translate-x-1 transform"
+                  className="hover:text-white transition-colors duration-300 text-left"
                 >
                   Templates
                 </button>
@@ -87,13 +87,13 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div className="hover:scale-105 transition-transform duration-300">
+          <div>
             <h3 className="font-semibold mb-4 text-white">Support</h3>
             <ul className="space-y-3 text-slate-400">
               <li>
                 <Link 
                   to="/faq" 
-                  className="hover:text-white transition-colors duration-300 hover:translate-x-1 transform inline-block"
+                  className="hover:text-white transition-colors duration-300"
                 >
                   FAQ
                 </Link>
@@ -101,7 +101,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   to="/privacy" 
-                  className="hover:text-white transition-colors duration-300 hover:translate-x-1 transform inline-block"
+                  className="hover:text-white transition-colors duration-300"
                 >
                   Privacy Policy
                 </Link>
@@ -109,7 +109,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   to="/terms" 
-                  className="hover:text-white transition-colors duration-300 hover:translate-x-1 transform inline-block"
+                  className="hover:text-white transition-colors duration-300"
                 >
                   Terms of Service
                 </Link>
@@ -120,10 +120,10 @@ export const Footer = () => {
 
         <div className="border-t border-slate-800 mt-12 pt-8 text-center">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-slate-400 hover:text-slate-300 transition-colors duration-300">
-              Qrenzo - Professional QR Code Generator
+            <p className="text-slate-400">
+              QRForge - Professional QR Code Generator
             </p>
-            <div className="flex items-center space-x-1 text-slate-400 hover:text-slate-300 transition-colors duration-300">
+            <div className="flex items-center space-x-1 text-slate-400">
               <span>Powered by innovation & creativity</span>
               <Heart className="h-4 w-4 text-red-500 fill-current animate-pulse" />
             </div>
