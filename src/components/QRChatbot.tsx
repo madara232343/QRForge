@@ -90,7 +90,7 @@ export const QRChatbot: React.FC<QRChatbotProps> = ({ onQRGenerated }) => {
           generateQRFromText(wifi, 'wifi');
         }
       };
-    } else if (lowerMessage.includes('phone') || lower Message.includes('call')) {
+    } else if (lowerMessage.includes('phone') || lowerMessage.includes('call')) {
       return {
         response: "I'll create a phone number QR code. When scanned, it will prompt to call the number directly.",
         suggestions: ['+1234567890', 'Generate Phone QR', 'Add more info'],
