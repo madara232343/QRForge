@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,16 +23,26 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
   const [enablePassword, setEnablePassword] = useState(false);
 
   const generateSmartLink = () => {
-    if (!smartUrl) {
+    if (!smartUrl.trim()) {
       toast.error('Please enter a destination URL');
       return;
     }
 
     // Validate URL
+    let validUrl = smartUrl.trim();
+    if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
+      validUrl = 'https://' + validUrl;
+    }
+
     try {
-      new URL(smartUrl);
+      new URL(validUrl);
     } catch {
       toast.error('Please enter a valid URL');
+      return;
+    }
+
+    if (enablePassword && !password.trim()) {
+      toast.error('Please enter a password');
       return;
     }
 
@@ -42,36 +51,40 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
     const smartLinkUrl = `${window.location.origin}/s/${shortCode}`;
     
     const smartLinkData = {
-      originalUrl: smartUrl,
+      originalUrl: validUrl,
       shortCode,
       tracking: enableTracking,
       expiry: enableExpiry ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000).toISOString() : null,
-      password: enablePassword ? password : null,
+      password: enablePassword ? password.trim() : null,
       clicks: 0,
       created: new Date().toISOString()
     };
+
+    console.log('Creating smart link:', smartLinkData);
 
     // Store smart link data in localStorage
     const smartLinks = JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}');
     smartLinks[shortCode] = smartLinkData;
     localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
 
+    console.log('Smart link saved to localStorage');
+
     // Update QR data with smart link
     setQRData({
       ...qrData,
       content: smartLinkUrl,
       smartLink: {
-        originalUrl: smartUrl,
+        originalUrl: validUrl,
         shortCode,
         tracking: enableTracking,
         expiry: enableExpiry ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000) : null,
-        password: enablePassword ? password : null,
+        password: enablePassword ? password.trim() : null,
         clicks: 0,
         created: new Date()
       }
     });
 
-    toast.success('Smart Link QR created! You can change the destination URL anytime.');
+    toast.success('Smart Link QR created successfully!');
   };
 
   const copySmartLink = async () => {
@@ -102,12 +115,12 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="smart-url">Destination URL</Label>
+          <Label htmlFor="smart-url">Destination URL *</Label>
           <Input
             id="smart-url"
             value={smartUrl}
             onChange={(e) => setSmartUrl(e.target.value)}
-            placeholder="https://example.com"
+            placeholder="example.com or https://example.com"
           />
         </div>
 
@@ -134,7 +147,7 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
               id="expiry-days"
               type="number"
               value={expiryDays}
-              onChange={(e) => setExpiryDays(parseInt(e.target.value))}
+              onChange={(e) => setExpiryDays(Math.max(1, parseInt(e.target.value) || 1))}
               min="1"
             />
           </div>
@@ -150,7 +163,7 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
 
         {enablePassword && (
           <div>
-            <Label htmlFor="qr-password">Password</Label>
+            <Label htmlFor="qr-password">Password *</Label>
             <Input
               id="qr-password"
               type="password"
@@ -163,7 +176,7 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
 
         <Button 
           onClick={generateSmartLink} 
-          disabled={!smartUrl}
+          disabled={!smartUrl.trim() || (enablePassword && !password.trim())}
           className="w-full bg-purple-600 hover:bg-purple-700"
         >
           Create Smart Link QR
@@ -192,6 +205,7 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
             </div>
             
             <div className="text-xs text-purple-600 dark:text-purple-400 space-y-1">
+              <p>Original URL: {qrData.smartLink.originalUrl}</p>
               <p>Clicks: {qrData.smartLink.clicks} | Created: {qrData.smartLink.created.toLocaleDateString()}</p>
               {qrData.smartLink.expiry && (
                 <p>Expires: {qrData.smartLink.expiry.toLocaleDateString()}</p>

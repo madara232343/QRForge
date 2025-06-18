@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Shield, ExternalLink, Clock, Lock } from 'lucide-react';
+import { Shield, ExternalLink, Clock, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SmartLinkData {
@@ -25,6 +25,7 @@ export const SmartLinkHandler: React.FC = () => {
   const [password, setPassword] = useState('');
   const [passwordRequired, setPasswordRequired] = useState(false);
   const [expired, setExpired] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     if (!shortCode) {
@@ -32,37 +33,50 @@ export const SmartLinkHandler: React.FC = () => {
       return;
     }
 
+    console.log('Looking for smart link with code:', shortCode);
+
     // Get smart link data from localStorage
     const smartLinks = JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}');
+    console.log('All smart links:', smartLinks);
+    
     const linkData = smartLinks[shortCode];
+    console.log('Found link data:', linkData);
 
     if (!linkData) {
+      console.log('No link data found for code:', shortCode);
       setLoading(false);
       return;
     }
 
     // Check if expired
     if (linkData.expiry && new Date(linkData.expiry) < new Date()) {
+      console.log('Link has expired');
       setExpired(true);
       setLoading(false);
       return;
     }
 
+    setSmartLink(linkData);
+
     // Check if password required
     if (linkData.password) {
+      console.log('Password required for this link');
       setPasswordRequired(true);
-    }
-
-    setSmartLink(linkData);
-    setLoading(false);
-
-    // Track click if tracking enabled and no password required
-    if (linkData.tracking && !linkData.password) {
-      trackClick(shortCode, linkData);
+      setLoading(false);
+    } else {
+      console.log('No password required, proceeding with redirect');
+      // Auto-redirect after a short delay for non-password protected links
+      setTimeout(() => {
+        handleRedirect(linkData);
+      }, 2000);
+      setLoading(false);
     }
   }, [shortCode]);
 
   const trackClick = (code: string, linkData: SmartLinkData) => {
+    if (!linkData.tracking) return;
+    
+    console.log('Tracking click for:', code);
     const smartLinks = JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}');
     smartLinks[code] = {
       ...linkData,
@@ -71,34 +85,32 @@ export const SmartLinkHandler: React.FC = () => {
     localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
   };
 
+  const handleRedirect = (linkData: SmartLinkData) => {
+    console.log('Redirecting to:', linkData.originalUrl);
+    setRedirecting(true);
+    
+    // Track the click
+    if (shortCode) {
+      trackClick(shortCode, linkData);
+    }
+
+    // Redirect to original URL
+    window.location.href = linkData.originalUrl;
+  };
+
   const handlePasswordSubmit = () => {
     if (!smartLink || password !== smartLink.password) {
       toast.error('Incorrect password');
       return;
     }
 
-    if (smartLink.tracking) {
-      trackClick(shortCode!, smartLink);
-    }
-
-    // Redirect to original URL
-    window.location.href = smartLink.originalUrl;
-  };
-
-  const handleDirectRedirect = () => {
-    if (!smartLink) return;
-
-    if (smartLink.tracking) {
-      trackClick(shortCode!, smartLink);
-    }
-
-    // Redirect to original URL
-    window.location.href = smartLink.originalUrl;
+    toast.success('Password correct! Redirecting...');
+    handleRedirect(smartLink);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
       </div>
     );
@@ -109,11 +121,17 @@ export const SmartLinkHandler: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-center text-red-600">Link Not Found</CardTitle>
+            <CardTitle className="text-center text-red-600 flex items-center justify-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              Link Not Found
+            </CardTitle>
           </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <CardContent className="text-center space-y-4">
+            <p className="text-gray-600 dark:text-gray-400">
               This smart link doesn't exist or has been removed.
+            </p>
+            <p className="text-sm text-gray-500">
+              Short code: {shortCode}
             </p>
             <Button asChild>
               <a href="/">Create New QR Code</a>
@@ -134,8 +152,8 @@ export const SmartLinkHandler: React.FC = () => {
               Link Expired
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <CardContent className="text-center space-y-4">
+            <p className="text-gray-600 dark:text-gray-400">
               This smart link has expired and is no longer accessible.
             </p>
             <Button asChild>
@@ -172,7 +190,7 @@ export const SmartLinkHandler: React.FC = () => {
                 onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit()}
               />
             </div>
-            <Button onClick={handlePasswordSubmit} className="w-full">
+            <Button onClick={handlePasswordSubmit} className="w-full" disabled={!password}>
               Access Link
             </Button>
           </CardContent>
@@ -181,22 +199,38 @@ export const SmartLinkHandler: React.FC = () => {
     );
   }
 
-  // Auto-redirect for non-password protected links
+  // Show redirect screen for non-password protected links
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center text-purple-600">Redirecting...</CardTitle>
+          <CardTitle className="text-center text-purple-600">
+            {redirecting ? 'Redirecting...' : 'Smart Link Found'}
+          </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="text-gray-600 dark:text-gray-400">
-            Taking you to: {smartLink.originalUrl}
-          </p>
-          <Button onClick={handleDirectRedirect} className="flex items-center gap-2">
-            <ExternalLink className="h-4 w-4" />
-            Go Now
-          </Button>
+          {redirecting ? (
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-gray-600 dark:text-gray-400">
+                You will be redirected to:
+              </p>
+              <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <p className="text-sm font-mono break-all">{smartLink.originalUrl}</p>
+              </div>
+              <p className="text-xs text-gray-500">
+                Redirecting automatically in 2 seconds...
+              </p>
+            </div>
+          )}
+          
+          {!redirecting && (
+            <Button onClick={() => handleRedirect(smartLink)} className="flex items-center gap-2">
+              <ExternalLink className="h-4 w-4" />
+              Go Now
+            </Button>
+          )}
         </CardContent>
       </Card>
     </div>
