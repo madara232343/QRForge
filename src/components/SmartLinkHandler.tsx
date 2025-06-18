@@ -29,6 +29,7 @@ export const SmartLinkHandler: React.FC = () => {
 
   useEffect(() => {
     if (!shortCode) {
+      console.log('No short code provided');
       setLoading(false);
       return;
     }
@@ -36,21 +37,38 @@ export const SmartLinkHandler: React.FC = () => {
     console.log('Looking for smart link with code:', shortCode);
 
     // Get smart link data from localStorage
-    const smartLinks = JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}');
-    console.log('All smart links:', smartLinks);
+    const smartLinksData = localStorage.getItem('qrenzo-smart-links');
+    console.log('Raw localStorage data:', smartLinksData);
+    
+    if (!smartLinksData) {
+      console.log('No smart links data in localStorage');
+      setLoading(false);
+      return;
+    }
+
+    let smartLinks;
+    try {
+      smartLinks = JSON.parse(smartLinksData);
+      console.log('Parsed smart links:', smartLinks);
+    } catch (error) {
+      console.error('Error parsing smart links data:', error);
+      setLoading(false);
+      return;
+    }
     
     const linkData = smartLinks[shortCode];
-    console.log('Found link data:', linkData);
+    console.log('Found link data for', shortCode, ':', linkData);
 
     if (!linkData) {
       console.log('No link data found for code:', shortCode);
+      console.log('Available codes:', Object.keys(smartLinks));
       setLoading(false);
       return;
     }
 
     // Check if expired
     if (linkData.expiry && new Date(linkData.expiry) < new Date()) {
-      console.log('Link has expired');
+      console.log('Link has expired:', linkData.expiry);
       setExpired(true);
       setLoading(false);
       return;
@@ -74,15 +92,26 @@ export const SmartLinkHandler: React.FC = () => {
   }, [shortCode]);
 
   const trackClick = (code: string, linkData: SmartLinkData) => {
-    if (!linkData.tracking) return;
+    if (!linkData.tracking) {
+      console.log('Tracking disabled for this link');
+      return;
+    }
     
     console.log('Tracking click for:', code);
-    const smartLinks = JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}');
-    smartLinks[code] = {
-      ...linkData,
-      clicks: linkData.clicks + 1
-    };
-    localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
+    try {
+      const smartLinksData = localStorage.getItem('qrenzo-smart-links');
+      if (smartLinksData) {
+        const smartLinks = JSON.parse(smartLinksData);
+        smartLinks[code] = {
+          ...linkData,
+          clicks: linkData.clicks + 1
+        };
+        localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
+        console.log('Click tracked successfully');
+      }
+    } catch (error) {
+      console.error('Error tracking click:', error);
+    }
   };
 
   const handleRedirect = (linkData: SmartLinkData) => {
@@ -95,7 +124,9 @@ export const SmartLinkHandler: React.FC = () => {
     }
 
     // Redirect to original URL
-    window.location.href = linkData.originalUrl;
+    setTimeout(() => {
+      window.location.href = linkData.originalUrl;
+    }, 1000);
   };
 
   const handlePasswordSubmit = () => {
@@ -210,14 +241,17 @@ export const SmartLinkHandler: React.FC = () => {
         </CardHeader>
         <CardContent className="text-center space-y-4">
           {redirecting ? (
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+            <div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Taking you to your destination...</p>
+            </div>
           ) : (
             <div className="space-y-4">
               <p className="text-gray-600 dark:text-gray-400">
                 You will be redirected to:
               </p>
               <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <p className="text-sm font-mono break-all">{smartLink.originalUrl}</p>
+                <p className="text-sm font-mono break-all">{smartLink?.originalUrl}</p>
               </div>
               <p className="text-xs text-gray-500">
                 Redirecting automatically in 2 seconds...
@@ -225,7 +259,7 @@ export const SmartLinkHandler: React.FC = () => {
             </div>
           )}
           
-          {!redirecting && (
+          {!redirecting && smartLink && (
             <Button onClick={() => handleRedirect(smartLink)} className="flex items-center gap-2">
               <ExternalLink className="h-4 w-4" />
               Go Now

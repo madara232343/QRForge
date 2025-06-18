@@ -62,29 +62,36 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
 
     console.log('Creating smart link:', smartLinkData);
 
-    // Store smart link data in localStorage
-    const smartLinks = JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}');
-    smartLinks[shortCode] = smartLinkData;
-    localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
+    try {
+      // Store smart link data in localStorage
+      const existingData = localStorage.getItem('qrenzo-smart-links');
+      const smartLinks = existingData ? JSON.parse(existingData) : {};
+      smartLinks[shortCode] = smartLinkData;
+      localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
 
-    console.log('Smart link saved to localStorage');
+      console.log('Smart link saved to localStorage');
+      console.log('All stored links:', JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}'));
 
-    // Update QR data with smart link
-    setQRData({
-      ...qrData,
-      content: smartLinkUrl,
-      smartLink: {
-        originalUrl: validUrl,
-        shortCode,
-        tracking: enableTracking,
-        expiry: enableExpiry ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000) : null,
-        password: enablePassword ? password.trim() : null,
-        clicks: 0,
-        created: new Date()
-      }
-    });
+      // Update QR data with smart link
+      setQRData({
+        ...qrData,
+        content: smartLinkUrl,
+        smartLink: {
+          originalUrl: validUrl,
+          shortCode,
+          tracking: enableTracking,
+          expiry: enableExpiry ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000) : null,
+          password: enablePassword ? password.trim() : null,
+          clicks: 0,
+          created: new Date()
+        }
+      });
 
-    toast.success('Smart Link QR created successfully!');
+      toast.success('Smart Link QR created successfully!');
+    } catch (error) {
+      console.error('Error saving smart link:', error);
+      toast.error('Failed to create smart link');
+    }
   };
 
   const copySmartLink = async () => {
