@@ -1,26 +1,37 @@
 
-User-agent: Googlebot
+User-agent: *
 Allow: /
 Crawl-delay: 1
+
+# Prioritize important pages for crawling
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0.5
+Disallow: /s/
 
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
+Disallow: /s/
 
+# Social media bots
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
 Allow: /
-Crawl-delay: 2
+
+# Block smart link pages from indexing (they're temporary redirects)
+Disallow: /s/
+Disallow: /*.json$
+Disallow: /admin/
+Disallow: /api/
 
 # Sitemap location
 Sitemap: https://qrenzo.com/sitemap.xml
 
-# Disallow any sensitive or admin paths (if any exist in future)
-Disallow: /admin/
-Disallow: /api/
-Disallow: /*.json$
+# Additional sitemaps for better indexing
+Sitemap: https://qrenzo.com/sitemap-images.xml

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,67 +27,77 @@ export const SmartLinkHandler: React.FC = () => {
   const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
-    if (!shortCode) {
-      console.log('No short code provided');
-      setLoading(false);
-      return;
-    }
+    const findSmartLink = () => {
+      if (!shortCode) {
+        console.log('No short code provided');
+        setLoading(false);
+        return;
+      }
 
-    console.log('Looking for smart link with code:', shortCode);
+      console.log('Looking for smart link with code:', shortCode);
 
-    // Get smart link data from localStorage
-    const smartLinksData = localStorage.getItem('qrenzo-smart-links');
-    console.log('Raw localStorage data:', smartLinksData);
-    
-    if (!smartLinksData) {
-      console.log('No smart links data in localStorage');
-      setLoading(false);
-      return;
-    }
+      try {
+        // Get smart link data from localStorage with better error handling
+        const smartLinksData = localStorage.getItem('qrenzo-smart-links');
+        console.log('Raw localStorage data:', smartLinksData);
+        
+        if (!smartLinksData) {
+          console.log('No smart links data in localStorage');
+          setLoading(false);
+          return;
+        }
 
-    let smartLinks;
-    try {
-      smartLinks = JSON.parse(smartLinksData);
-      console.log('Parsed smart links:', smartLinks);
-    } catch (error) {
-      console.error('Error parsing smart links data:', error);
-      setLoading(false);
-      return;
-    }
-    
-    const linkData = smartLinks[shortCode];
-    console.log('Found link data for', shortCode, ':', linkData);
+        const smartLinks = JSON.parse(smartLinksData);
+        console.log('All stored smart links:', smartLinks);
+        console.log('Available short codes:', Object.keys(smartLinks));
+        
+        const linkData = smartLinks[shortCode];
+        console.log('Found link data for', shortCode, ':', linkData);
 
-    if (!linkData) {
-      console.log('No link data found for code:', shortCode);
-      console.log('Available codes:', Object.keys(smartLinks));
-      setLoading(false);
-      return;
-    }
+        if (!linkData) {
+          console.log('No link data found for code:', shortCode);
+          setLoading(false);
+          return;
+        }
 
-    // Check if expired
-    if (linkData.expiry && new Date(linkData.expiry) < new Date()) {
-      console.log('Link has expired:', linkData.expiry);
-      setExpired(true);
-      setLoading(false);
-      return;
-    }
+        // Check if expired
+        if (linkData.expiry) {
+          const expiryDate = new Date(linkData.expiry);
+          const now = new Date();
+          console.log('Checking expiry:', expiryDate, 'vs', now);
+          
+          if (expiryDate < now) {
+            console.log('Link has expired');
+            setExpired(true);
+            setLoading(false);
+            return;
+          }
+        }
 
-    setSmartLink(linkData);
+        console.log('Smart link is valid:', linkData);
+        setSmartLink(linkData);
 
-    // Check if password required
-    if (linkData.password) {
-      console.log('Password required for this link');
-      setPasswordRequired(true);
-      setLoading(false);
-    } else {
-      console.log('No password required, proceeding with redirect');
-      // Auto-redirect after a short delay for non-password protected links
-      setTimeout(() => {
-        handleRedirect(linkData);
-      }, 2000);
-      setLoading(false);
-    }
+        // Check if password required
+        if (linkData.password) {
+          console.log('Password required for this link');
+          setPasswordRequired(true);
+        } else {
+          console.log('No password required, starting auto-redirect timer');
+          // Auto-redirect after 3 seconds for non-password protected links
+          setTimeout(() => {
+            handleRedirect(linkData);
+          }, 3000);
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('Error processing smart link:', error);
+        setLoading(false);
+      }
+    };
+
+    // Small delay to ensure localStorage is ready
+    setTimeout(findSmartLink, 100);
   }, [shortCode]);
 
   const trackClick = (code: string, linkData: SmartLinkData) => {
@@ -102,12 +111,14 @@ export const SmartLinkHandler: React.FC = () => {
       const smartLinksData = localStorage.getItem('qrenzo-smart-links');
       if (smartLinksData) {
         const smartLinks = JSON.parse(smartLinksData);
-        smartLinks[code] = {
-          ...linkData,
-          clicks: linkData.clicks + 1
-        };
-        localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
-        console.log('Click tracked successfully');
+        if (smartLinks[code]) {
+          smartLinks[code] = {
+            ...smartLinks[code],
+            clicks: smartLinks[code].clicks + 1
+          };
+          localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
+          console.log('Click tracked successfully, new count:', smartLinks[code].clicks);
+        }
       }
     } catch (error) {
       console.error('Error tracking click:', error);
@@ -115,7 +126,7 @@ export const SmartLinkHandler: React.FC = () => {
   };
 
   const handleRedirect = (linkData: SmartLinkData) => {
-    console.log('Redirecting to:', linkData.originalUrl);
+    console.log('Starting redirect to:', linkData.originalUrl);
     setRedirecting(true);
     
     // Track the click
@@ -125,18 +136,26 @@ export const SmartLinkHandler: React.FC = () => {
 
     // Redirect to original URL
     setTimeout(() => {
+      console.log('Executing redirect...');
       window.location.href = linkData.originalUrl;
-    }, 1000);
+    }, 1500);
   };
 
   const handlePasswordSubmit = () => {
-    if (!smartLink || password !== smartLink.password) {
+    if (!smartLink || !password.trim()) {
+      toast.error('Please enter a password');
+      return;
+    }
+
+    if (password.trim() !== smartLink.password) {
       toast.error('Incorrect password');
       return;
     }
 
     toast.success('Password correct! Redirecting...');
-    handleRedirect(smartLink);
+    setTimeout(() => {
+      handleRedirect(smartLink);
+    }, 1000);
   };
 
   if (loading) {

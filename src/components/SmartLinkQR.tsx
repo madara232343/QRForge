@@ -28,7 +28,7 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
       return;
     }
 
-    // Validate URL
+    // Validate and normalize URL
     let validUrl = smartUrl.trim();
     if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
       validUrl = 'https://' + validUrl;
@@ -60,17 +60,27 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
       created: new Date().toISOString()
     };
 
-    console.log('Creating smart link:', smartLinkData);
+    console.log('Creating smart link with data:', smartLinkData);
 
     try {
-      // Store smart link data in localStorage
-      const existingData = localStorage.getItem('qrenzo-smart-links');
-      const smartLinks = existingData ? JSON.parse(existingData) : {};
+      // Store smart link data in localStorage with better error handling
+      let smartLinks = {};
+      
+      try {
+        const existingData = localStorage.getItem('qrenzo-smart-links');
+        if (existingData) {
+          smartLinks = JSON.parse(existingData);
+        }
+      } catch (parseError) {
+        console.warn('Error parsing existing smart links, creating new:', parseError);
+        smartLinks = {};
+      }
+      
       smartLinks[shortCode] = smartLinkData;
       localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
 
-      console.log('Smart link saved to localStorage');
-      console.log('All stored links:', JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}'));
+      console.log('Smart link saved successfully');
+      console.log('Updated localStorage data:', JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}'));
 
       // Update QR data with smart link
       setQRData({
@@ -88,9 +98,14 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
       });
 
       toast.success('Smart Link QR created successfully!');
+      
+      // Clear form
+      setSmartUrl('');
+      setPassword('');
+      
     } catch (error) {
       console.error('Error saving smart link:', error);
-      toast.error('Failed to create smart link');
+      toast.error('Failed to create smart link. Please try again.');
     }
   };
 
