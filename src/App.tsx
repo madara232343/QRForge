@@ -17,21 +17,21 @@ const queryClient = new QueryClient();
 
 const App = () => {
   useEffect(() => {
-    // SEO Meta Tags for better Google AdSense compatibility
+    // Enhanced SEO Meta Tags for better Google AdSense compatibility
     const metaTags = [
-      { name: 'description', content: 'Qrenzo - Free unlimited QR code generator with advanced customization. Create professional QR codes for URLs, WiFi, business cards, and more. No registration required.' },
-      { name: 'keywords', content: 'qr code generator, free qr code, qr code maker, custom qr code, wifi qr code, business card qr code, url qr code, qrenzo' },
-      { name: 'author', content: 'mr robot' },
+      { name: 'description', content: 'Generate custom QR codes instantly for free with Qrenzo. No signup, no limits. Just fast, easy, beautiful QR code generation.' },
+      { name: 'keywords', content: 'free qr code generator, qr code maker online, custom qr codes, qr generator no signup, qrenzo, wifi qr code, business card qr code' },
+      { name: 'author', content: 'Qrenzo' },
       { name: 'robots', content: 'index, follow' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
-      { property: 'og:title', content: 'Qrenzo - Free QR Code Generator' },
-      { property: 'og:description', content: 'Create unlimited professional QR codes with advanced customization. 100% free forever.' },
+      { property: 'og:title', content: 'Free QR Code Generator Online | Qrenzo' },
+      { property: 'og:description', content: 'Generate custom QR codes instantly for free with Qrenzo. No signup, no limits. Just fast, easy, beautiful QR code generation.' },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: window.location.href },
       { property: 'og:site_name', content: 'Qrenzo' },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: 'Qrenzo - Free QR Code Generator' },
-      { name: 'twitter:description', content: 'Create unlimited professional QR codes with advanced customization. 100% free forever.' }
+      { name: 'twitter:title', content: 'Free QR Code Generator Online | Qrenzo' },
+      { name: 'twitter:description', content: 'Generate custom QR codes instantly for free with Qrenzo. No signup, no limits. Just fast, easy, beautiful QR code generation.' }
     ];
 
     metaTags.forEach(tag => {
@@ -47,15 +47,15 @@ const App = () => {
       }
     });
 
-    // Set page title
-    document.title = 'Qrenzo - Free Unlimited QR Code Generator | Create Professional QR Codes';
+    // Set optimized page title
+    document.title = 'Free QR Code Generator Online | Qrenzo';
 
-    // Add structured data for better SEO
+    // Enhanced structured data for better SEO
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Qrenzo",
-      "description": "Free unlimited QR code generator with advanced customization",
+      "name": "Qrenzo - Free QR Code Generator",
+      "description": "Generate custom QR codes instantly for free with Qrenzo. No signup, no limits. Just fast, easy, beautiful QR code generation.",
       "url": window.location.origin,
       "applicationCategory": "Utility",
       "operatingSystem": "Web Browser",
@@ -65,9 +65,10 @@ const App = () => {
         "priceCurrency": "USD"
       },
       "creator": {
-        "@type": "Person",
-        "name": "mr robot"
-      }
+        "@type": "Organization",
+        "name": "Qrenzo"
+      },
+      "keywords": "free qr code generator, qr code maker online, custom qr codes, qr generator no signup, qrenzo"
     };
 
     const script = document.createElement('script');

@@ -3,94 +3,133 @@ import React from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const FAQ = () => {
-  const navigate = useNavigate();
-
-  const faqs = [
+  const faqData = [
     {
-      question: "Is Qrenzo really free?",
-      answer: "Yes! Qrenzo is 100% free with unlimited QR code generation. No hidden fees or registration required."
+      question: "What is a QR Code and how does it work?",
+      answer: "A QR Code (Quick Response Code) is a type of barcode that can store various types of information like URLs, text, contact information, and more. When scanned with a smartphone camera or QR reader app, it instantly takes the user to the encoded content. QR codes work by encoding data in a pattern of black squares arranged on a white background."
     },
     {
-      question: "What types of QR codes can I create?",
-      answer: "You can create QR codes for URLs, text, email, phone numbers, WiFi credentials, business cards, crypto wallets, event invites, and more."
+      question: "Are QR codes free to create with Qrenzo?",
+      answer: "Yes! Qrenzo is completely free to use. You can create unlimited QR codes without any cost, registration, or hidden fees. There are no limits on the number of QR codes you can generate."
     },
     {
-      question: "Can I customize my QR codes?",
-      answer: "Absolutely! You can change colors, add logos, apply gradients, choose different shapes (dots, round, hex), customize eye styles, and even add AI-generated backgrounds."
+      question: "How do I make a QR code for my website?",
+      answer: "Creating a QR code for your website is simple: 1) Select 'URL' as your content type, 2) Enter your website URL, 3) Customize the design with colors and logos if desired, 4) Click generate, and 5) Download your QR code. It takes less than 30 seconds!"
     },
     {
-      question: "What formats can I download?",
-      answer: "You can download QR codes in PNG, JPG, SVG, WebP, PDF formats, or get all formats in a ZIP file."
+      question: "Can I customize the appearance of my QR codes?",
+      answer: "Absolutely! Qrenzo offers extensive customization options including custom colors, gradients, different shapes (square, rounded, dots), logo integration, and various design templates. You can make your QR codes match your brand perfectly."
     },
     {
-      question: "Can I use QR codes commercially?",
-      answer: "Yes, all QR codes generated are free to use for personal and commercial purposes."
+      question: "What file formats can I download my QR codes in?",
+      answer: "You can download your QR codes in multiple formats: PNG (for web and print), SVG (scalable vector format), and PDF (for professional printing). Each format is optimized for different use cases."
     },
     {
-      question: "Do QR codes expire?",
-      answer: "Static QR codes never expire. Smart Link QR codes (premium feature) can have optional expiry dates."
+      question: "Are QR codes safe to use?",
+      answer: "QR codes themselves are safe, but always be cautious about scanning unknown QR codes as they can direct you to malicious websites. When creating QR codes with Qrenzo, your data is processed securely and we don't store any personal information."
     },
     {
-      question: "What are Smart Link QR codes?",
-      answer: "Smart Link QR codes redirect to a short URL that you can change later, include click tracking, analytics, and optional expiry dates."
+      question: "Do I need to sign up or register to use Qrenzo?",
+      answer: "No registration required! You can start creating QR codes immediately without providing any personal information. This ensures your privacy and makes the process quick and hassle-free."
     },
     {
-      question: "Can I create password-protected QR codes?",
-      answer: "Yes! Our Locked QR feature allows you to require a password before the QR code redirects to its destination."
+      question: "Can I track how many people scan my QR codes?",
+      answer: "Yes! With our Smart Link feature, you can create trackable QR codes that provide analytics on scan counts, locations, and more. You can also add password protection and expiry dates to your smart links."
     },
     {
-      question: "Can I generate multiple QR codes at once?",
-      answer: "Yes! Use our Batch Generator to upload a CSV file and create hundreds of QR codes at once, perfect for businesses and events."
+      question: "What types of content can I encode in QR codes?",
+      answer: "Qrenzo supports various content types including: URLs/websites, plain text, email addresses, phone numbers, WiFi credentials, contact information (vCard), SMS messages, and more. Each type is optimized for the best user experience."
     },
     {
-      question: "Can I share my QR designs with others?",
-      answer: "Yes! You can publish your custom QR designs to our public gallery where others can view, vote, and remix your creations."
+      question: "Can I add my logo to QR codes?",
+      answer: "Yes! You can upload your logo and integrate it into your QR codes. Our system automatically optimizes the logo size and placement to maintain scannability while showcasing your brand."
+    },
+    {
+      question: "Will my QR codes work on all devices?",
+      answer: "Yes! QR codes created with Qrenzo work on all smartphones, tablets, and devices with camera functionality. They're compatible with built-in camera apps on iOS and Android, as well as dedicated QR reader apps."
+    },
+    {
+      question: "Can I create multiple QR codes at once?",
+      answer: "Yes! Our Batch Generator feature allows you to create multiple QR codes simultaneously, perfect for events, product catalogs, or large campaigns. Simply upload your data and generate hundreds of QR codes in minutes."
     }
+  ];
+
+  const useCases = [
+    "Business cards and networking",
+    "Restaurant menus and contactless ordering", 
+    "Event tickets and check-ins",
+    "Product packaging and authentication",
+    "WiFi password sharing",
+    "Social media profile sharing",
+    "Marketing campaigns and promotions",
+    "Real estate listings and virtual tours",
+    "Educational materials and resources",
+    "Contact information sharing"
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900">
       <Header />
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center mb-8">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate(-1)}
-              className="mr-4"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Frequently Asked Questions
+      
+      <main className="py-12 lg:py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Frequently Asked Questions
+              </span>
             </h1>
+            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Everything you need to know about creating QR codes with Qrenzo
+            </p>
           </div>
 
-          <div className="space-y-6">
-            {faqs.map((faq, index) => (
-              <Card key={index} className="animate-fade-in">
-                <CardHeader>
-                  <CardTitle className="text-lg text-slate-800 dark:text-slate-200">
-                    {faq.question}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    {faq.answer}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="max-w-4xl mx-auto">
+            <Card className="mb-8">
+              <CardContent className="p-6">
+                <Accordion type="single" collapsible className="w-full">
+                  {faqData.map((faq, index) => (
+                    <AccordionItem key={index} value={`item-${index}`}>
+                      <AccordionTrigger className="text-left font-semibold">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-center">
+                  <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    Top 10 Uses for QR Codes in 2025
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {useCases.map((useCase, index) => (
+                    <div key={index} className="flex items-center space-x-3">
+                      <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        {index + 1}
+                      </div>
+                      <span className="text-slate-700 dark:text-slate-300">{useCase}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </div>
+      </main>
+
       <Footer />
     </div>
   );

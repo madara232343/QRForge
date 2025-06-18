@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { QrCode, Download, Upload, Image } from 'lucide-react';
+import { QrCode, Download, Upload, Image, Shield, Zap, Palette, Globe } from 'lucide-react';
 
 export const Features = () => {
   const features = [
@@ -12,9 +12,9 @@ export const Features = () => {
       gradient: 'from-purple-500 to-purple-600'
     },
     {
-      icon: Image,
+      icon: Palette,
       title: 'Custom Styling',
-      description: 'Personalize your QR codes with custom colors, shapes, and logo overlays.',
+      description: 'Personalize your QR codes with custom colors, shapes, gradients, and logo overlays.',
       gradient: 'from-blue-500 to-blue-600'
     },
     {
@@ -26,8 +26,32 @@ export const Features = () => {
     {
       icon: Upload,
       title: 'Logo Integration',
-      description: 'Add your brand logo to QR codes while maintaining scannability.',
+      description: 'Add your brand logo to QR codes while maintaining perfect scannability.',
       gradient: 'from-indigo-500 to-indigo-600'
+    },
+    {
+      icon: Zap,
+      title: 'Instant Generation',
+      description: 'Generate professional QR codes in seconds with our lightning-fast tool.',
+      gradient: 'from-yellow-500 to-orange-500'
+    },
+    {
+      icon: Shield,
+      title: 'Privacy Focused',
+      description: 'No registration, no data collection. Your privacy is our priority.',
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    {
+      icon: Globe,
+      title: 'Smart Links',
+      description: 'Create trackable smart links with analytics and password protection.',
+      gradient: 'from-pink-500 to-rose-500'
+    },
+    {
+      icon: Image,
+      title: 'Batch Processing',
+      description: 'Generate multiple QR codes at once to save time and increase productivity.',
+      gradient: 'from-violet-500 to-purple-500'
     }
   ];
 
@@ -37,11 +61,12 @@ export const Features = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Powerful Features
+              Why Choose Qrenzo?
             </span>
           </h2>
           <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Everything you need to create professional QR codes that represent your brand perfectly.
+            Everything you need to create professional QR codes that represent your brand perfectly. 
+            Fast, easy, and completely free forever.
           </p>
         </div>
 
@@ -66,6 +91,31 @@ export const Features = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        <div className="mt-16">
+          <h3 className="text-3xl font-bold text-center mb-8">
+            <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              How It Works
+            </span>
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">1</div>
+              <h4 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white">Enter Content</h4>
+              <p className="text-slate-600 dark:text-slate-400">Add your URL, text, or other content you want to encode</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">2</div>
+              <h4 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white">Customize Style</h4>
+              <p className="text-slate-600 dark:text-slate-400">Choose colors, add your logo, and make it uniquely yours</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">3</div>
+              <h4 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white">Download & Use</h4>
+              <p className="text-slate-600 dark:text-slate-400">Download in your preferred format and start using immediately</p>
+            </div>
+          </div>
         </div>
 
         <div className="mt-16 text-center">
