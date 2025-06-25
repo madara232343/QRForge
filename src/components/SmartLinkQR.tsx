@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { QRData } from '@/components/QRGenerator';
 import { Link, Calendar, BarChart3, Shield, Copy, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SmartLinkQRProps {
   qrData: QRData;
@@ -21,8 +23,9 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
   const [enableExpiry, setEnableExpiry] = useState(false);
   const [password, setPassword] = useState('');
   const [enablePassword, setEnablePassword] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
-  const generateSmartLink = () => {
+  const generateSmartLink = async () => {
     if (!smartUrl.trim()) {
       toast.error('Please enter a destination URL');
       return;
@@ -46,41 +49,39 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
       return;
     }
 
-    // Generate a unique short code
-    const shortCode = Math.random().toString(36).substring(2, 8);
-    const smartLinkUrl = `${window.location.origin}/s/${shortCode}`;
-    
-    const smartLinkData = {
-      originalUrl: validUrl,
-      shortCode,
-      tracking: enableTracking,
-      expiry: enableExpiry ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000).toISOString() : null,
-      password: enablePassword ? password.trim() : null,
-      clicks: 0,
-      created: new Date().toISOString()
-    };
-
-    console.log('Creating smart link with data:', smartLinkData);
+    setIsCreating(true);
 
     try {
-      // Store smart link data in localStorage with better error handling
-      let smartLinks = {};
+      // Generate a unique short code
+      const shortCode = Math.random().toString(36).substring(2, 8);
       
-      try {
-        const existingData = localStorage.getItem('qrenzo-smart-links');
-        if (existingData) {
-          smartLinks = JSON.parse(existingData);
-        }
-      } catch (parseError) {
-        console.warn('Error parsing existing smart links, creating new:', parseError);
-        smartLinks = {};
-      }
-      
-      smartLinks[shortCode] = smartLinkData;
-      localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
+      const smartLinkData = {
+        short_code: shortCode,
+        original_url: validUrl,
+        tracking: enableTracking,
+        expiry: enableExpiry ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000).toISOString() : null,
+        password: enablePassword ? password.trim() : null,
+        clicks: 0
+      };
 
-      console.log('Smart link saved successfully');
-      console.log('Updated localStorage data:', JSON.parse(localStorage.getItem('qrenzo-smart-links') || '{}'));
+      console.log('Creating smart link with data:', smartLinkData);
+
+      // Store smart link in Supabase
+      const { data, error } = await supabase
+        .from('smart_links')
+        .insert([smartLinkData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating smart link:', error);
+        toast.error('Failed to create smart link. Please try again.');
+        return;
+      }
+
+      console.log('Smart link created successfully:', data);
+
+      const smartLinkUrl = `${window.location.origin}/s/${shortCode}`;
 
       // Update QR data with smart link
       setQRData({
@@ -106,6 +107,8 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
     } catch (error) {
       console.error('Error saving smart link:', error);
       toast.error('Failed to create smart link. Please try again.');
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -198,10 +201,10 @@ export const SmartLinkQR: React.FC<SmartLinkQRProps> = ({ qrData, setQRData }) =
 
         <Button 
           onClick={generateSmartLink} 
-          disabled={!smartUrl.trim() || (enablePassword && !password.trim())}
+          disabled={!smartUrl.trim() || (enablePassword && !password.trim()) || isCreating}
           className="w-full bg-purple-600 hover:bg-purple-700"
         >
-          Create Smart Link QR
+          {isCreating ? 'Creating...' : 'Create Smart Link QR'}
         </Button>
 
         {qrData.smartLink && (

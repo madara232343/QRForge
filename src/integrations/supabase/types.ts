@@ -9,7 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      smart_links: {
+        Row: {
+          clicks: number
+          created_at: string
+          expiry: string | null
+          id: string
+          original_url: string
+          password: string | null
+          short_code: string
+          tracking: boolean
+          updated_at: string
+        }
+        Insert: {
+          clicks?: number
+          created_at?: string
+          expiry?: string | null
+          id?: string
+          original_url: string
+          password?: string | null
+          short_code: string
+          tracking?: boolean
+          updated_at?: string
+        }
+        Update: {
+          clicks?: number
+          created_at?: string
+          expiry?: string | null
+          id?: string
+          original_url?: string
+          password?: string | null
+          short_code?: string
+          tracking?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

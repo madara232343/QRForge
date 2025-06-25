@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,15 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Shield, ExternalLink, Clock, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SmartLinkData {
-  originalUrl: string;
-  shortCode: string;
+  id: string;
+  short_code: string;
+  original_url: string;
+  password?: string;
   tracking: boolean;
-  expiry: string | null;
-  password: string | null;
+  expiry?: string;
   clicks: number;
-  created: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export const SmartLinkHandler: React.FC = () => {
@@ -27,7 +31,7 @@ export const SmartLinkHandler: React.FC = () => {
   const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
-    const findSmartLink = () => {
+    const findSmartLink = async () => {
       if (!shortCode) {
         console.log('No short code provided');
         setLoading(false);
@@ -37,32 +41,29 @@ export const SmartLinkHandler: React.FC = () => {
       console.log('Looking for smart link with code:', shortCode);
 
       try {
-        // Get smart link data from localStorage with better error handling
-        const smartLinksData = localStorage.getItem('qrenzo-smart-links');
-        console.log('Raw localStorage data:', smartLinksData);
-        
-        if (!smartLinksData) {
-          console.log('No smart links data in localStorage');
+        const { data, error } = await supabase
+          .from('smart_links')
+          .select('*')
+          .eq('short_code', shortCode)
+          .single();
+
+        if (error) {
+          console.error('Error fetching smart link:', error);
           setLoading(false);
           return;
         }
 
-        const smartLinks = JSON.parse(smartLinksData);
-        console.log('All stored smart links:', smartLinks);
-        console.log('Available short codes:', Object.keys(smartLinks));
-        
-        const linkData = smartLinks[shortCode];
-        console.log('Found link data for', shortCode, ':', linkData);
-
-        if (!linkData) {
-          console.log('No link data found for code:', shortCode);
+        if (!data) {
+          console.log('No smart link found for code:', shortCode);
           setLoading(false);
           return;
         }
+
+        console.log('Found smart link data:', data);
 
         // Check if expired
-        if (linkData.expiry) {
-          const expiryDate = new Date(linkData.expiry);
+        if (data.expiry) {
+          const expiryDate = new Date(data.expiry);
           const now = new Date();
           console.log('Checking expiry:', expiryDate, 'vs', now);
           
@@ -74,18 +75,17 @@ export const SmartLinkHandler: React.FC = () => {
           }
         }
 
-        console.log('Smart link is valid:', linkData);
-        setSmartLink(linkData);
+        setSmartLink(data);
 
         // Check if password required
-        if (linkData.password) {
+        if (data.password) {
           console.log('Password required for this link');
           setPasswordRequired(true);
         } else {
           console.log('No password required, starting auto-redirect timer');
           // Auto-redirect after 3 seconds for non-password protected links
           setTimeout(() => {
-            handleRedirect(linkData);
+            handleRedirect(data);
           }, 3000);
         }
         
@@ -96,29 +96,29 @@ export const SmartLinkHandler: React.FC = () => {
       }
     };
 
-    // Small delay to ensure localStorage is ready
-    setTimeout(findSmartLink, 100);
+    findSmartLink();
   }, [shortCode]);
 
-  const trackClick = (code: string, linkData: SmartLinkData) => {
+  const trackClick = async (linkData: SmartLinkData) => {
     if (!linkData.tracking) {
       console.log('Tracking disabled for this link');
       return;
     }
     
-    console.log('Tracking click for:', code);
+    console.log('Tracking click for:', linkData.short_code);
     try {
-      const smartLinksData = localStorage.getItem('qrenzo-smart-links');
-      if (smartLinksData) {
-        const smartLinks = JSON.parse(smartLinksData);
-        if (smartLinks[code]) {
-          smartLinks[code] = {
-            ...smartLinks[code],
-            clicks: smartLinks[code].clicks + 1
-          };
-          localStorage.setItem('qrenzo-smart-links', JSON.stringify(smartLinks));
-          console.log('Click tracked successfully, new count:', smartLinks[code].clicks);
-        }
+      const { error } = await supabase
+        .from('smart_links')
+        .update({ 
+          clicks: linkData.clicks + 1,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', linkData.id);
+
+      if (error) {
+        console.error('Error tracking click:', error);
+      } else {
+        console.log('Click tracked successfully, new count:', linkData.clicks + 1);
       }
     } catch (error) {
       console.error('Error tracking click:', error);
@@ -126,18 +126,16 @@ export const SmartLinkHandler: React.FC = () => {
   };
 
   const handleRedirect = (linkData: SmartLinkData) => {
-    console.log('Starting redirect to:', linkData.originalUrl);
+    console.log('Starting redirect to:', linkData.original_url);
     setRedirecting(true);
     
     // Track the click
-    if (shortCode) {
-      trackClick(shortCode, linkData);
-    }
+    trackClick(linkData);
 
     // Redirect to original URL
     setTimeout(() => {
       console.log('Executing redirect...');
-      window.location.href = linkData.originalUrl;
+      window.location.href = linkData.original_url;
     }, 1500);
   };
 
@@ -270,7 +268,7 @@ export const SmartLinkHandler: React.FC = () => {
                 You will be redirected to:
               </p>
               <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <p className="text-sm font-mono break-all">{smartLink?.originalUrl}</p>
+                <p className="text-sm font-mono break-all">{smartLink?.original_url}</p>
               </div>
               <p className="text-xs text-gray-500">
                 Redirecting automatically in 2 seconds...
